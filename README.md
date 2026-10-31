@@ -1,8 +1,8 @@
 # Ostodata-agentti
 
-[![tests](https://github.com/KAYTTAJA/REPO/actions/workflows/tests.yml/badge.svg)](https://github.com/KAYTTAJA/REPO/actions/workflows/tests.yml)
+[![tests](https://github.com/Psyge/ostoagentti/actions/workflows/tests.yml/badge.svg)](https://github.com/Psyge/ostoagentti/actions/workflows/tests.yml)
 
-**[Kokeile demoa →](https://SOVELLUS.streamlit.app)**
+**[Kokeile demoa →](https://ostoagentti.streamlit.app)**
 
 Agentti analysoi Suomen julkisen sektorin ostolaskuja ja etsii niistä poikkeamia.
 
@@ -31,7 +31,7 @@ streamlit run app.py
 4. Avaa [share.streamlit.io](https://share.streamlit.io) → *Create app* → valitse repo, haara `main` ja tiedosto `app.py`.
 5. Valitse *Advanced settings* -kohdasta Python 3.12. Liitä *Secrets*-kenttään `.streamlit/secrets.toml.example`-tiedoston rivit omalla avaimellasi.
 6. Paina *Deploy*. Ensimmäinen käynnistys asentaa paketit ja rakentaa tietokannan Parquet-tiedostosta. Sovellus päivittyy jokaisesta pushista.
-7. Vaihda tämän README:n alun linkit (demo ja testimerkki) omiksi, ja lisää `REPO_URL` Secretsiin.
+7. Vaihda tämän README:n alun linkit (demo ja testimerkki) omiksi ja `app.py`:n `REPO_URL`-oletus omaan repoosi (tai aseta `REPO_URL` Secretsiin).
 
 Streamlit Cloud nukuttaa sovelluksen, jos sillä ei ole kävijöitä, joten ensimmäinen avaus voi kestää hetken.
 
@@ -47,7 +47,7 @@ ostoagentti/cli.py        komentorivi
 synth/make_data.py        synteettinen data samalla skeemalla + istutetut poikkeamat (truth.json)
 eval/eval_detectors.py    tunnistimien recall ja precision usealla siemenellä
 demo/                     demon data (Parquet) ja valmiit vastaukset
-tests/                    43 testiä, myös Streamlit-sovellukselle (AppTest)
+tests/                    44 testiä, myös Streamlit-sovellukselle (AppTest)
 .github/workflows/        testit ja tunnistimien mittaus jokaisesta pushista
 ```
 

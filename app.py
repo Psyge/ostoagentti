@@ -14,6 +14,7 @@ Asetukset ympäristömuuttujina tai Streamlitin Secrets-kohdassa (juuritasolla):
 from __future__ import annotations
 
 import json
+import logging
 import os
 import threading
 from datetime import date
@@ -44,7 +45,7 @@ EXAMPLES_PATH = os.environ.get("OSTO_ESIMERKIT", str(ROOT / esimerkit.DEFAULT_PA
 MEMORY_LIMIT = os.environ.get("DUCKDB_MEMORY_LIMIT", "1GB") or None
 DAILY_LIMIT = int(os.environ.get("DAILY_LIMIT", "50"))
 SESSION_LIMIT = int(os.environ.get("SESSION_LIMIT", "5"))
-REPO_URL = os.environ.get("REPO_URL", "")
+REPO_URL = os.environ.get("REPO_URL", "https://github.com/Psyge/ostoagentti")
 MAX_QUESTION_CHARS = 300
 MIN_HISTORY_MONTHS = 6  # sama kuin tunnistimen spike_min_active_months
 DATA_URL = "https://www.avoindata.fi/data/fi/dataset/tutkihankintoja-data"
@@ -246,6 +247,7 @@ def run_agent(db: str, kind: str, arg: str) -> dict | None:
             else:
                 res, _ = agent.report(arg, on_step=on_step)
         except openai.APIError as e:
+            logging.getLogger("ostoagentti").warning("LLM-kutsu epäonnistui: %s", e)  # näkyy Manage app -lokissa
             status.update(label="Kielimallin kutsu epäonnistui", state="error")
             st.error(llm_error_text(e))
             return None

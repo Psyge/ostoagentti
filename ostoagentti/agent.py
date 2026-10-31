@@ -38,6 +38,17 @@ Tunnistintulokset (JSON):
 FINAL_NUDGE = "Työkalukierrokset loppuivat. Kirjoita nyt lopullinen vastaus saamiesi tulosten perusteella."
 
 
+def _tool_call_message(c) -> dict:
+    """Työkalukutsu historiaan. Gemini 3 palauttaa extra_content-kentässä thought_signaturen,
+    joka on lähetettävä takaisin sellaisenaan; muuten seuraava kutsu päättyy 400-virheeseen."""
+    out = {"id": c.id, "type": "function",
+           "function": {"name": c.function.name, "arguments": c.function.arguments or "{}"}}
+    extra = getattr(c, "extra_content", None)
+    if extra:
+        out["extra_content"] = extra
+    return out
+
+
 @dataclass
 class AgentResult:
     answer: str
@@ -88,11 +99,7 @@ class Agent:
             messages.append({
                 "role": "assistant",
                 "content": msg.content or None,
-                "tool_calls": [
-                    {"id": c.id, "type": "function",
-                     "function": {"name": c.function.name, "arguments": c.function.arguments or "{}"}}
-                    for c in calls
-                ],
+                "tool_calls": [_tool_call_message(c) for c in calls],
             })
             for c in calls:
                 try:

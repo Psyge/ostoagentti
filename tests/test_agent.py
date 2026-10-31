@@ -88,3 +88,13 @@ def test_on_step_reports_each_tool_call(tools):
     seen = []
     Agent(tools, client, "fake").run("q", on_step=seen.append)
     assert [s["tool"] for s in seen] == ["describe_schema", "run_sql"]
+
+
+def test_gemini_thought_signature_is_sent_back(tools):
+    signed = _call("c1", "describe_schema", {})
+    signed.extra_content = {"google": {"thought_signature": "SIG"}}
+    client = FakeClient([_msg(calls=[signed, _call("c2", "run_sql", {"sql": "SELECT 1"})]), _msg(content="ok")])
+    Agent(tools, client, "fake").run("q")
+    sent = [m for m in client.requests[-1]["messages"] if m["role"] == "assistant"][0]["tool_calls"]
+    assert sent[0]["extra_content"] == {"google": {"thought_signature": "SIG"}}
+    assert "extra_content" not in sent[1]
